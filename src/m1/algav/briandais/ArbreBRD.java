@@ -96,4 +96,25 @@ public class ArbreBRD {
 		} while (!fileBRD.isEmpty() || p != null);
 	}
 
+	public static NoeudBRD ajouterBRD(NoeudBRD abr, String m) {
+		if ("".equals(m)) {
+			return abr;
+		}
+		if (abr == null) {
+			return constArbreBRD(m);
+		}
+
+		if (m.charAt(0) == abr.getCle()) {
+			abr.setFils(ajouterBRD(abr.getFils(), m.substring(1)));
+			return abr;
+		}
+		if (m.charAt(0) > abr.getCle()) {
+			abr.setFrere(ajouterBRD(abr.getFrere(), m));
+		} else {
+			return new NoeudBRD(m.charAt(0), constArbreBRD(m.substring(1)), abr);
+		}
+
+		return abr;
+	}
+
 }
