@@ -130,6 +130,13 @@ public class ArbreBRD {
 		return abr;
 	}
 
+	public static int comptageNil(NoeudBRD abr) {
+		if (abr == null) {
+			return 1;
+		}
+		return comptageNil(abr.getFils()) + comptageNil(abr.getFrere());
+	}
+
 	public static int comptageMots(NoeudBRD abr) {
 		if (abr == null) {
 			return 0;
@@ -137,7 +144,7 @@ public class ArbreBRD {
 		if (abr.getCle() == FIN_MOT) {
 			return 1 + comptageMots(abr.getFrere());
 		}
-		return  comptageMots(abr.getFils()) + comptageMots(abr.getFrere());
+		return comptageMots(abr.getFils()) + comptageMots(abr.getFrere());
 	}
 
 	/**
@@ -220,5 +227,60 @@ public class ArbreBRD {
 
 	public static List<String> listeMots(NoeudBRD abr) {
 		return liste(abr, new StringBuffer(), new ArrayList<String>());
+	}
+
+	public static int sommeHauteur(NoeudBRD abr) {
+		if (abr == null)
+			return 0;
+		List<NoeudBRD> l = new ArrayList<>();
+		int s = 0, h = 0;
+		NoeudBRD p = abr;
+		int size = 0;
+		l.add(p);
+		while (!l.isEmpty()) {
+			s = s + h * l.size();
+			size = l.size();
+			for (int i = 0; i < size; i++) {
+				p = l.remove(0);
+				if (p.getFils() != null)
+					l.add(p.getFils());
+				if (p.getFrere() != null)
+					l.add(p.getFrere());
+			}
+			h++;
+		}
+
+		return s;
+
+	}
+
+	public static int profondeurMoyenne(NoeudBRD abr) {
+		if (abr == null)
+			return 0;
+		return sommeHauteur(abr) / taille(abr);
+	}
+
+	public static NoeudBRD supprimerBRD(NoeudBRD abr, String m) {
+		if (abr == null)
+			return abr;
+
+		if ("".equals(m)) {
+			if (abr.getFils() == null)
+				return abr.getFrere();
+			return abr;
+		}
+		if (abr.getCle() == m.charAt(0)) {
+			abr.setFils(supprimerBRD(abr.getFils(), m.substring(1)));
+			if (abr.getFils() == null) {
+				return abr.getFrere();
+			}
+			return abr;
+		}
+
+		if (abr.getCle() < m.charAt(0)) {
+			abr.setFrere(supprimerBRD(abr.getFrere(), m));
+		}
+		return abr;
+
 	}
 }

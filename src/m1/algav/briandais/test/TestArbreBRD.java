@@ -27,7 +27,7 @@ public class TestArbreBRD {
 		root = ajouterBRD(root, "zig");
 		root = ajouterBRD(root, "sinto");
 		root = ajouterBRD(root, "voila");
-		
+
 	}
 
 	@After
@@ -43,7 +43,7 @@ public class TestArbreBRD {
 
 	@Test
 	public void testNbMaxFrere() {
-		
+
 		System.out.println("nbMaxFrere" + nbMaxFrere(root));
 	}
 
@@ -69,7 +69,7 @@ public class TestArbreBRD {
 		int c = prefixe(root, "za");
 		System.out.println("nb prefixe za: " + c);
 	}
-	
+
 	@Test
 	public void testRecherche() {
 		System.out.println("recherche");
@@ -77,13 +77,13 @@ public class TestArbreBRD {
 		Assert.assertTrue("zak", ArbreBRD.recherche(root, "zak"));
 		Assert.assertFalse("zak", ArbreBRD.recherche(root, "sou"));
 	}
-	
+
 	@Test
 	public void testHauteur() {
 		int c = ArbreBRD.hauteur(root);
 		System.out.println("nb hauteur: " + c);
 	}
-	
+
 	@Test
 	public void testTaille() {
 		int c = ArbreBRD.taille(root);
@@ -94,7 +94,28 @@ public class TestArbreBRD {
 	public void testListeMots() {
 		System.out.println("listMots: " + ArbreBRD.listeMots(root));
 	}
-	
-	
 
+	@Test
+	public void testComptageNil() {
+		System.out.println("compatge Nil: " + ArbreBRD.comptageNil(root));
+	}
+
+	@Test
+	public void testSommeHauteur() {
+		System.out.println("testSommeHauteur: " + ArbreBRD.sommeHauteur(root));
+	}
+
+	@Test
+	public void testProfondeurMoyenne() {
+		System.out.println("testProfondeurMoyenne: " + ArbreBRD.profondeurMoyenne(root));
+	}
+
+	@Test
+	public void testSupprimmerBRD() {
+		System.out.println("listMots: " + ArbreBRD.listeMots(root));
+		root = ArbreBRD.supprimerBRD(root, "voila");
+		root = ArbreBRD.supprimerBRD(root, "sinto");
+		System.out.println("testSupprimmerBRD: (voila et sinto) ");
+		System.out.println("listMots: " + ArbreBRD.listeMots(root));
+	}
 }
