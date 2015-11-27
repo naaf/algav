@@ -20,13 +20,14 @@ public class TestArbreBRD {
 
 	@BeforeClass
 	public static void initData() {
-		root = ArbreBRD.constArbreBRD("Ashraf");
-		root = ajouterBRD(root, "Ash");
-		root = ajouterBRD(root, "zak");
-		root = ajouterBRD(root, "zag");
-		root = ajouterBRD(root, "zig");
-		root = ajouterBRD(root, "sinto");
-		root = ajouterBRD(root, "voila");
+		
+//		root = ArbreBRD.constArbreBRD("armure");
+		root = ajouterBRD(root, "epee");
+		root = ajouterBRD(root, "bouclier");
+//		root = ajouterBRD(root, "sac");
+//		root = ajouterBRD(root, "valise");
+//		root = ajouterBRD(root, "calculatrice");
+		root = ajouterBRD(root, "plateau");
 
 	}
 
@@ -49,13 +50,16 @@ public class TestArbreBRD {
 
 	@Test
 	public void testAffiche() {
-		NoeudBRD n = ArbreBRD.constArbreBRD("Ashraf");
-		affiche(n);
+	
 	}
 
 	@Test
 	public void testAjouterBRD() {
-		affiche(root);
+		System.out.println("listMots: " + ArbreBRD.listeMots(root));
+		root = ajouterBRD(root, "nouveau");
+		root = ajouterBRD(root, "nouveaute");
+		System.out.println("testAjouterBRD: (nouveau et nouveaute) ");
+		System.out.println("listMots: " + ArbreBRD.listeMots(root));
 	}
 
 	@Test
@@ -73,9 +77,8 @@ public class TestArbreBRD {
 	@Test
 	public void testRecherche() {
 		System.out.println("recherche");
-		Assert.assertTrue("ash", ArbreBRD.recherche(root, "Ash"));
-		Assert.assertTrue("zak", ArbreBRD.recherche(root, "zak"));
-		Assert.assertFalse("zak", ArbreBRD.recherche(root, "sou"));
+		Assert.assertTrue("bouclier", ArbreBRD.recherche(root, "bouclier"));
+		Assert.assertFalse("sac", ArbreBRD.recherche(root, "zac"));
 	}
 
 	@Test
@@ -113,9 +116,31 @@ public class TestArbreBRD {
 	@Test
 	public void testSupprimmerBRD() {
 		System.out.println("listMots: " + ArbreBRD.listeMots(root));
-		root = ArbreBRD.supprimerBRD(root, "voila");
-		root = ArbreBRD.supprimerBRD(root, "sinto");
-		System.out.println("testSupprimmerBRD: (voila et sinto) ");
+		root = ArbreBRD.supprimerBRD(root, "epee");
+		root = ArbreBRD.supprimerBRD(root, "plateau");
+		System.out.println("testSupprimmerBRD: (epee et plateau) ");
 		System.out.println("listMots: " + ArbreBRD.listeMots(root));
 	}
+	
+	@Test
+	public void testFusionBRD() {
+		System.out.println("testFusionBRD: root avant" + ArbreBRD.listeMots(root) );
+		NoeudBRD n = ArbreBRD.constArbreBRD("bas");
+		
+		n = ajouterBRD(n, "basse");
+//		n = ajouterBRD(n, "arcle");
+		n = ajouterBRD(n, "regle");
+		n = ajouterBRD(n, "gare");
+//		n = ajouterBRD(n, "table");
+		n = ajouterBRD(n, "zebre");
+		int a = ArbreBRD.comptageMots(n);
+		int b = ArbreBRD.comptageMots(root);
+		System.out.println("testFusionBRD: n avant" + ArbreBRD.listeMots(n) );
+		root = ArbreBRD.fusion(root, n);
+		System.out.println("testFusionBRD: n + root" + ArbreBRD.listeMots(root) );
+		Assert.assertTrue(ArbreBRD.comptageMots(root) == a+b);
+		
+		
+	}
+
 }

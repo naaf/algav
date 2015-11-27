@@ -283,4 +283,52 @@ public class ArbreBRD {
 		return abr;
 
 	}
+
+	public static NoeudBRD fusion(NoeudBRD a, NoeudBRD b) {
+		if (a == null || a == b)
+			return b;
+		if (b == null)
+			return a;
+
+		NoeudBRD bFrere;
+		if (a.getCle() == b.getCle()) {
+			a.setFils(fusion(a.getFils(), b.getFils()));
+			a.setFrere(fusion(a.getFrere(), b.getFrere()));
+			return a;
+		} else if (a.getCle() > b.getCle()) {
+			bFrere = b.getFrere();
+			b.setFrere(a);
+			a = fusion(a, bFrere);
+			return b;
+		} else {
+			if (a.getFrere() == null) {
+				a.setFrere(b);
+				return a;
+			}
+			if (a.getFrere().getCle() > b.getCle()) {
+				bFrere = b.getFrere();
+				b.setFrere(a.getFrere());
+				a.setFrere(b);
+				b.setFrere(fusion(b.getFrere(), bFrere));
+				return a;
+			} else {
+				a.setFrere(fusion(a.getFrere(), b));
+				return a;
+			}
+		}
+
+	}
+
+	public static NoeudBRD fusionBRD(NoeudBRD a, NoeudBRD b) {
+		if (a == null || a == b)
+			return b;
+		else if (b == null)
+			return a;
+		if (comptageMots(a) > comptageMots(b))
+			return fusion(a, b);
+		else
+			return fusion(b, a);
+
+	}
+
 }
