@@ -2,7 +2,7 @@ package m1.algav.briandais.test;
 
 import static m1.algav.briandais.ArbreBRD.ajouterBRD;
 import static m1.algav.briandais.ArbreBRD.comptageMots;
-import static m1.algav.briandais.ArbreBRD.nbMaxFrere;
+import static m1.algav.briandais.ArbreBRD.largeur;
 import static m1.algav.briandais.ArbreBRD.prefixeBRD;
 
 import org.junit.After;
@@ -20,14 +20,14 @@ public class TestArbreBRD {
 	@BeforeClass
 	public static void initData() {
 
-		 root = ArbreBRD.constArbreBRD("Armure");
-		 root = ajouterBRD(root, "epee");
-		 root = ajouterBRD(root, "bouclier");
-		 root = ajouterBRD(root, "sac");
-		 root = ajouterBRD(root, "valise");
-		 root = ajouterBRD(root, "calculatrice");
-		 root = ajouterBRD(root, "plateau");
-	
+		root = ArbreBRD.constArbreBRD("Armure");
+		root = ajouterBRD(root, "epee");
+		root = ajouterBRD(root, "bouclier");
+		root = ajouterBRD(root, "sac");
+		root = ajouterBRD(root, "valise");
+		root = ajouterBRD(root, "calculatrice");
+		root = ajouterBRD(root, "plateau");
+//		root = ajouterBRD(root, "plat");
 
 	}
 
@@ -43,23 +43,24 @@ public class TestArbreBRD {
 	}
 
 	@Test
-	public void testNbMaxFrere() {
-
-		System.out.println("nbMaxFrere" + nbMaxFrere(root));
+	public void testLargeur() {
+		NoeudBRD n = ArbreBRD.constArbreBRD("ashraf");
+		n = ajouterBRD(n, "ash");
+		System.out.println("testLargeur : " + largeur(n));
 	}
 
 	@Test
 	public void testAffiche() {
-
+		ArbreBRD.afficheBRD(root);
 	}
 
 	@Test
 	public void testAjouterBRD() {
-		 System.out.println("listMots: " + ArbreBRD.listeMots(root));
-		 root = ajouterBRD(root, "nouveau");
-		 root = ajouterBRD(root, "nouveaute");
-		 System.out.println("testAjouterBRD: (nouveau et nouveaute) ");
-		 System.out.println("listMots: " + ArbreBRD.listeMots(root));
+		System.out.println("listMots: " + ArbreBRD.listeMots(root));
+		root = ajouterBRD(root, "nouveau");
+		root = ajouterBRD(root, "nouveaute");
+		System.out.println("testAjouterBRD: (nouveau et nouveaute) ");
+		System.out.println("listMots: " + ArbreBRD.listeMots(root));
 	}
 
 	@Test
@@ -76,9 +77,9 @@ public class TestArbreBRD {
 
 	@Test
 	public void testRecherche() {
-		 System.out.println("recherche");
-		 Assert.assertTrue("bouclier", ArbreBRD.rechercheBRD(root, "bouclier"));
-		 Assert.assertFalse("sac", ArbreBRD.rechercheBRD(root, "zac"));
+		System.out.println("recherche");
+		Assert.assertTrue("bouclier", ArbreBRD.rechercheBRD(root, "bouclier"));
+		Assert.assertFalse("sac", ArbreBRD.rechercheBRD(root, "zac"));
 	}
 
 	@Test
@@ -140,6 +141,8 @@ public class TestArbreBRD {
 		root = ArbreBRD.fusionBRD(root, n);
 		System.out.println("testFusionBRD: n + root" + ArbreBRD.listeMots(root));
 		Assert.assertTrue(ArbreBRD.comptageMots(root) == a + b);
+		ArbreBRD.afficheBRD(root);
+	
 
 	}
 

@@ -7,12 +7,15 @@ public class ArbreBRD {
 	static final char FIN_MOT = '#';
 	static final char MOT_NULL = '\0';
 	static final char SEPERATOR_VER = '|';
-	static final String SEPERATOR_HOR = "--";
-	static final String SPACE = "  ";
+	static final String SEPERATOR_HOR = "-";
+	static final int SEPERATOR_UNIT = 2;
+	static final String SPACE = " ";
 
 	public static NoeudBRD constArbreBRD(String m) {
 		if ("".equals(m))
 			return new NoeudBRD(FIN_MOT, null, null);
+
+		m = m.toLowerCase();
 		NoeudBRD root = new NoeudBRD(m.charAt(0), null, null);
 		NoeudBRD p = root;
 		for (int i = 1; i < m.length(); i++) {
@@ -29,74 +32,99 @@ public class ArbreBRD {
 		return abr.getFils();
 	}
 
-	public static int nbMaxFrere(NoeudBRD abr) {
-		if (abr == null) {
+	public static int largeur(NoeudBRD abr) {
+		if (abr == null)
 			return 0;
-		}
-		return Math.max(nbMaxFrere(abr.getFils()), 1 + nbMaxFrere(abr.getFrere()) + nbMaxFrere(fils(abr.getFrere())));
-
+		int n1 = 0, n2 = 0;
+		if (abr.getFrere() != null)
+			n1 = 1 + largeur(abr.getFrere());
+		n2 = largeur(abr.getFils());
+		return Math.max(n1 +n2, n2);
 	}
 
-	private static void printHorizontal(NoeudBRD abr, int largeur) {
+	private static void printHorizontal(NoeudBRD abr, int pos, int pointeur, int l) {
 		if (abr == null) {
 			// System.out.print(MOT_NULL);
 			return;
 		}
+		// traitement de position
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < pos - pointeur; i++) {
+			sb.append(SPACE);
+		}
+		System.out.print(sb);
+		// affiche cle
 		System.out.print(abr.getCle());
-		for (int i = 0; i < largeur; i++) {
-			System.out.print(SEPERATOR_HOR);
-		}
 
+		String c = abr.getFrere() != null ? SEPERATOR_HOR : SPACE;
+		sb = new StringBuffer();
+		for (int i = 0; i < l; i++) {
+			sb.append(c);
+		}
+		// traitement de lien avec frere
+		System.out.print(sb);
 	}
 
-	private static void printVertical(List<Integer> nbMaxFreres, int nb) {
-		int nSpace;
+	private static void printVertical(List<Integer> largeur, int nb) {
+		int pos;
+		int pointeur = 0;
 		System.out.println("");
+		StringBuffer sb;
 		for (int i = 0; i < nb; i++) {
-
-			System.out.print(SEPERATOR_VER);
-			nSpace = nbMaxFreres.get(i);
-			for (int j = 0; j < nSpace; j++) {
-				System.out.print(SPACE);
+			pos = largeur.get(i);
+			sb = new StringBuffer();
+			for (int j = 0; j < pos - pointeur; j++) {
+				sb.append(SPACE);
 			}
+			System.out.print(sb.toString());
+			System.out.print(SEPERATOR_VER);
+			pointeur = pos + 1;
 		}
 		System.out.println("");
 	}
 
-	public static void affiche(NoeudBRD racine) {
+	public static void afficheBRD(NoeudBRD racine) {
 		if (racine == null) {
 			System.out.println("NULL");
 			return;
 		}
+
 		List<NoeudBRD> fileBRD = new ArrayList<>();
-		List<Integer> nbMaxFreres = new ArrayList<>();
+		List<Integer> positions = new ArrayList<>();
 		int i = 0;
 		int nb = 0;
 		int pnb = 1;
 		NoeudBRD p = racine;
+
+		int l = 0, pos = 0, pointeur = 0;
 
 		do {
 
 			if (p == null) {
 				pnb--;
 				if (pnb == 0) {
-					printVertical(nbMaxFreres, nb);
+					printVertical(positions, nb);
 					pnb = nb;
 					nb = 0;
+					pointeur = 0;
 				}
 
 				p = fils(fileBRD.remove(0));
-				nbMaxFreres.remove(0);
+				pos = positions.remove(0);
 				i--;
 
 			} else {
 
 				fileBRD.add(p);
+				positions.add(pos);
 				nb++;
-				nbMaxFreres.add(nbMaxFrere(fils(p)));
+				l = largeur(fils(p));
+				l = l + SEPERATOR_UNIT + (l * SEPERATOR_UNIT);
+				pos = pos + l + 1;
 
-				printHorizontal(fileBRD.get(i), nbMaxFreres.get(i));
+				printHorizontal(fileBRD.get(i), positions.get(i), pointeur, l);
 				p = p.getFrere();
+				pointeur = pos;
 				i++;
 			}
 
