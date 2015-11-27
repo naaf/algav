@@ -103,14 +103,16 @@ public class ArbreBRD {
 		} while (!fileBRD.isEmpty() || p != null);
 	}
 
-	/**
-	 * 
-	 * @param abr
-	 * @param m
-	 * @return precondition m non vide
-	 */
 	public static NoeudBRD ajouterBRD(NoeudBRD abr, String m) {
+		if ("".equals(m) || abr == null)
+			return abr;
+		return ajouter(abr, m.toLowerCase());
+	}
+
+	private static NoeudBRD ajouter(NoeudBRD abr, String m) {
 		if ("".equals(m)) {
+			if (abr != null && abr.getCle() == FIN_MOT)
+				return abr;
 			return new NoeudBRD(FIN_MOT, null, abr);
 		}
 		if (abr == null) {
@@ -118,11 +120,11 @@ public class ArbreBRD {
 		}
 
 		if (m.charAt(0) == abr.getCle()) {
-			abr.setFils(ajouterBRD(abr.getFils(), m.substring(1)));
+			abr.setFils(ajouter(abr.getFils(), m.substring(1)));
 			return abr;
 		}
 		if (m.charAt(0) > abr.getCle()) {
-			abr.setFrere(ajouterBRD(abr.getFrere(), m));
+			abr.setFrere(ajouter(abr.getFrere(), m));
 		} else {
 			return new NoeudBRD(m.charAt(0), constArbreBRD(m.substring(1)), abr);
 		}
@@ -147,13 +149,13 @@ public class ArbreBRD {
 		return comptageMots(abr.getFils()) + comptageMots(abr.getFrere());
 	}
 
-	/**
-	 * 
-	 * @param abr
-	 * @param m
-	 * @return precondition m non vide
-	 */
-	public static int prefixe(NoeudBRD abr, String m) {
+	public static int prefixeBRD(NoeudBRD abr, String m) {
+		if ("".equals(m) || abr == null)
+			return 0;
+		return prefixe(abr, m.toLowerCase());
+	}
+
+	private static int prefixe(NoeudBRD abr, String m) {
 		if (abr == null) {
 			return 0;
 		}
@@ -170,7 +172,7 @@ public class ArbreBRD {
 		}
 	}
 
-	public static boolean recherche(NoeudBRD abr, String m) {
+	public static boolean rechercheBRD(NoeudBRD abr, String m) {
 		if (abr == null || "".equals(m)) {
 			return false;
 		}
@@ -261,6 +263,12 @@ public class ArbreBRD {
 	}
 
 	public static NoeudBRD supprimerBRD(NoeudBRD abr, String m) {
+		if ("".equals(m) || abr == null)
+			return null;
+		return supprimer(abr, m.toLowerCase());
+	}
+
+	private static NoeudBRD supprimer(NoeudBRD abr, String m) {
 		if (abr == null)
 			return abr;
 
@@ -270,7 +278,7 @@ public class ArbreBRD {
 			return abr;
 		}
 		if (abr.getCle() == m.charAt(0)) {
-			abr.setFils(supprimerBRD(abr.getFils(), m.substring(1)));
+			abr.setFils(supprimer(abr.getFils(), m.substring(1)));
 			if (abr.getFils() == null) {
 				return abr.getFrere();
 			}
@@ -278,13 +286,13 @@ public class ArbreBRD {
 		}
 
 		if (abr.getCle() < m.charAt(0)) {
-			abr.setFrere(supprimerBRD(abr.getFrere(), m));
+			abr.setFrere(supprimer(abr.getFrere(), m));
 		}
 		return abr;
 
 	}
 
-	public static NoeudBRD fusion(NoeudBRD a, NoeudBRD b) {
+	public static NoeudBRD fusionBRD(NoeudBRD a, NoeudBRD b) {
 		if (a == null || a == b)
 			return b;
 		if (b == null)
@@ -292,13 +300,13 @@ public class ArbreBRD {
 
 		NoeudBRD bFrere;
 		if (a.getCle() == b.getCle()) {
-			a.setFils(fusion(a.getFils(), b.getFils()));
-			a.setFrere(fusion(a.getFrere(), b.getFrere()));
+			a.setFils(fusionBRD(a.getFils(), b.getFils()));
+			a.setFrere(fusionBRD(a.getFrere(), b.getFrere()));
 			return a;
 		} else if (a.getCle() > b.getCle()) {
 			bFrere = b.getFrere();
 			b.setFrere(a);
-			a = fusion(a, bFrere);
+			a.setFrere(fusionBRD(a.getFrere(), bFrere));
 			return b;
 		} else {
 			if (a.getFrere() == null) {
@@ -309,25 +317,13 @@ public class ArbreBRD {
 				bFrere = b.getFrere();
 				b.setFrere(a.getFrere());
 				a.setFrere(b);
-				b.setFrere(fusion(b.getFrere(), bFrere));
+				b.setFrere(fusionBRD(b.getFrere(), bFrere));
 				return a;
 			} else {
-				a.setFrere(fusion(a.getFrere(), b));
+				a.setFrere(fusionBRD(a.getFrere(), b));
 				return a;
 			}
 		}
-
-	}
-
-	public static NoeudBRD fusionBRD(NoeudBRD a, NoeudBRD b) {
-		if (a == null || a == b)
-			return b;
-		else if (b == null)
-			return a;
-		if (comptageMots(a) > comptageMots(b))
-			return fusion(a, b);
-		else
-			return fusion(b, a);
 
 	}
 
