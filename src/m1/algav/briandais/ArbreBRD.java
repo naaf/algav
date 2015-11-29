@@ -6,7 +6,7 @@ import java.util.List;
 public class ArbreBRD {
 	static final char FIN_MOT = '#';
 	static final char MOT_NULL = '\0';
-	static final char SEPERATOR_VER = '|';
+	static final String SEPERATOR_VER = "|";
 	static final String SEPERATOR_HOR = "-";
 	static final int SEPERATOR_UNIT = 2;
 	static final String SPACE = " ";
@@ -39,12 +39,11 @@ public class ArbreBRD {
 		if (abr.getFrere() != null)
 			n1 = 1 + largeur(abr.getFrere());
 		n2 = largeur(abr.getFils());
-		return Math.max(n1 +n2, n2);
+		return Math.max(n1 + n2, n2);
 	}
 
-	private static void printHorizontal(NoeudBRD abr, int pos, int pointeur, int l) {
+	private static void printHorizontal(NoeudBRD abr, int pos, int pointeur, int l, StringBuffer buf) {
 		if (abr == null) {
-			// System.out.print(MOT_NULL);
 			return;
 		}
 		// traitement de position
@@ -52,9 +51,10 @@ public class ArbreBRD {
 		for (int i = 0; i < pos - pointeur; i++) {
 			sb.append(SPACE);
 		}
-		System.out.print(sb);
+		buf.append(sb);
+		
 		// affiche cle
-		System.out.print(abr.getCle());
+		buf.append(abr.getCle());
 
 		String c = abr.getFrere() != null ? SEPERATOR_HOR : SPACE;
 		sb = new StringBuffer();
@@ -62,13 +62,13 @@ public class ArbreBRD {
 			sb.append(c);
 		}
 		// traitement de lien avec frere
-		System.out.print(sb);
+		buf.append(sb);
 	}
 
-	private static void printVertical(List<Integer> largeur, int nb) {
+	private static void printVertical(List<Integer> largeur, int nb, StringBuffer buf) {
 		int pos;
 		int pointeur = 0;
-		System.out.println("");
+		buf.append("\n");
 		StringBuffer sb;
 		for (int i = 0; i < nb; i++) {
 			pos = largeur.get(i);
@@ -76,19 +76,19 @@ public class ArbreBRD {
 			for (int j = 0; j < pos - pointeur; j++) {
 				sb.append(SPACE);
 			}
-			System.out.print(sb.toString());
-			System.out.print(SEPERATOR_VER);
+			buf.append(sb);
+			buf.append(SEPERATOR_VER);
 			pointeur = pos + 1;
 		}
-		System.out.println("");
+		buf.append("\n");
 	}
 
-	public static void afficheBRD(NoeudBRD racine) {
+	public static StringBuffer afficheBRD(NoeudBRD racine) {
+		StringBuffer buf = new StringBuffer("");
 		if (racine == null) {
 			System.out.println("NULL");
-			return;
+			return buf;
 		}
-
 		List<NoeudBRD> fileBRD = new ArrayList<>();
 		List<Integer> positions = new ArrayList<>();
 		int i = 0;
@@ -103,7 +103,7 @@ public class ArbreBRD {
 			if (p == null) {
 				pnb--;
 				if (pnb == 0) {
-					printVertical(positions, nb);
+					printVertical(positions, nb, buf);
 					pnb = nb;
 					nb = 0;
 					pointeur = 0;
@@ -122,17 +122,19 @@ public class ArbreBRD {
 				l = l + SEPERATOR_UNIT + (l * SEPERATOR_UNIT);
 				pos = pos + l + 1;
 
-				printHorizontal(fileBRD.get(i), positions.get(i), pointeur, l);
+				printHorizontal(fileBRD.get(i), positions.get(i), pointeur, l, buf);
 				p = p.getFrere();
 				pointeur = pos;
 				i++;
 			}
 
 		} while (!fileBRD.isEmpty() || p != null);
+		
+		return buf;
 	}
 
 	public static NoeudBRD ajouterBRD(NoeudBRD abr, String m) {
-		if ("".equals(m) || abr == null)
+		if ("".equals(m))
 			return abr;
 		return ajouter(abr, m.toLowerCase());
 	}
