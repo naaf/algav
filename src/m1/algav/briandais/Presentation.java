@@ -41,7 +41,7 @@ public class Presentation {
 	public static void exo5_12() throws IOException {
 		NoeudBRD root = null;
 		long shakespearTemps = shakespear(root);
-		Input input = new InputFromFile(new File("jeu_test.txt"));
+		Input input = new InputFromFile(new File("jeu_test2.txt"));
 		String[] tests = input.getText().split("\n");
 		long tabTemps[] = new long[tests.length];
 		long debut = 0;
