@@ -46,7 +46,8 @@ public class TestArbreBRD {
 
 	@Test
 	public void testAffiche() {
-		ArbreBRD.afficheBRD(root);
+		
+		System.out.println(ArbreBRD.afficheBRD(root));
 	}
 
 	@Test
