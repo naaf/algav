@@ -17,13 +17,19 @@ public class Presentation {
 	protected static String REPERTOIRE = "shakespear";
 	protected static int TAILLE_TAB = 20;
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		// exo1_3();
-		// exo5_12();
+	public static void main(String[] args) throws IOException,
+			InterruptedException {
+		exo1_3();
+		exo5_12();
 
-		System.out.println("temps en milliseconde ajout successifs : " + shakespearParAddtionSuccessif());
-//		System.out.println("temps en milliseconde fusion successifs : " + shakespearParFusion());
-//		System.out.println("temps en milliseconde fusionThread successifs : " + shakespearParFusionThread(root));
+		shakespear();
+		System.out
+				.println("temps en milliseconde ajout successifs (shakespear): "
+						+ shakespearParAddtionSuccessif());
+		System.out.println("temps en milliseconde fusion (shakespear): "
+				+ shakespearParFusion());
+		System.out.println("temps en milliseconde fusionThread (shakespear): "
+				+ shakespearParFusionThread());
 	}
 
 	public static void exo1_3() {
@@ -36,7 +42,7 @@ public class Presentation {
 		}
 		long temps = System.nanoTime() - debut;
 		System.out.println(ArbreBRD.afficheBRD(root));
-		System.out.println("temps en milliseconde ajout successifs : " + temps);
+		System.out.println("temps en nanoseconde ajout successifs : " + temps);
 	}
 
 	public static void exo5_12() throws IOException {
@@ -53,10 +59,16 @@ public class Presentation {
 			tabTemps[i] = System.nanoTime() - debut;
 		}
 		total = System.nanoTime() - total;
-		System.out.println("temps en milliseconde ajout successifs shakespear : " + shakespearTemps);
+		System.out
+				.println("temps en milliseconde ajout successifs shakespear : "
+						+ shakespearTemps);
 		System.out.println(Arrays.asList(tests));
-		System.out.println("temps en nanoseconde ajout successifs mots : " + Arrays.toString(tabTemps));
-		System.out.println("temps en nanoseconde ajout successifs 20 mots " + total);
+		System.out.println("temps en nanoseconde ajout successifs mots : "
+				+ Arrays.toString(tabTemps));
+		System.out.println("temps en nanoseconde ajout successifs 20 mots "
+				+ total);
+		System.out.println("temps moyenne d'un ajout en nanoseconde ==> "
+				+ total / tests.length);
 
 		// Suppression
 
@@ -67,8 +79,14 @@ public class Presentation {
 			tabTemps[i] = System.nanoTime() - debut;
 		}
 		total = System.nanoTime() - total;
-		System.out.println("temps en nanoseconde suppression successifs mots : " + Arrays.toString(tabTemps));
-		System.out.println("temps en nanoseconde suppression successifs 20 mots " + total);
+		System.out
+				.println("temps en nanoseconde suppression successifs mots : "
+						+ Arrays.toString(tabTemps));
+		System.out
+				.println("temps en nanoseconde suppression successifs 20 mots "
+						+ total);
+		System.out.println("temps moyenne d'un suppression en nanoseconde ==> "
+				+ total / tests.length);
 
 	}
 
@@ -96,17 +114,7 @@ public class Presentation {
 		for (String s : mots) {
 			root = ajouterBRD(root, s);
 		}
-		long temps = System.currentTimeMillis() - debut;
-
-		File f = new File("affiche.txt");
-		FileOutputStream fs = new FileOutputStream(f);
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fs));
-		String aff = ArbreBRD.afficheBRD(root).toString();
-		bw.write(aff);
-		bw.flush();
-		bw.close();
-
-		return temps;
+		return System.currentTimeMillis() - debut;
 	}
 
 	/**
@@ -134,26 +142,18 @@ public class Presentation {
 			}
 			root = ArbreBRD.fusionBRD(root, roots[i]);
 		}
-		long temps = System.currentTimeMillis() - debut;
-
-		File f = new File("affiche.txt");
-		FileOutputStream fs = new FileOutputStream(f);
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fs));
-		String aff = ArbreBRD.afficheBRD(root).toString();
-		bw.write(aff);
-		bw.flush();
-		bw.close();
-
-		return temps;
+		return System.currentTimeMillis() - debut;
 
 	}
 
-	public static long shakespearParFusionThread(NoeudBRD root) throws IOException, InterruptedException {
+	public static long shakespearParFusionThread() throws IOException,
+			InterruptedException {
 		File repertoire = new File(REPERTOIRE);
 		final File[] files = repertoire.listFiles();
 		NoeudBRD roots[] = new NoeudBRD[files.length];
 		Thread threads[] = new Thread[files.length];
 		Input input;
+		NoeudBRD root = null;
 		String textes[][] = new String[files.length][];
 		for (int i = 0; i < files.length; i++) {
 			input = new InputFromFile(files[i]);
@@ -161,40 +161,130 @@ public class Presentation {
 		}
 
 		long debut = System.currentTimeMillis();
-		for (int i = 0; i < roots.length; i++) {
-			final int c = i;
-			threads[c] = new Thread(() -> {
-				for (String s : textes[c]) {
-					roots[c] = ajouterBRD(roots[c], s);
+
+		threads[0] = new Thread(() -> {
+			int taille = roots.length / 3;
+			int init = 0;
+			for (int i = init; i < taille; i++) {
+				for (String s : textes[i]) {
+					roots[i] = ajouterBRD(roots[i], s);
 				}
-			});
-			threads[c].start();
+			}
+		});
+		threads[0].start();
+		threads[1] = new Thread(() -> {
+			int taille = 2 * roots.length / 3;
+			int init = 1 + roots.length / 3;
+			for (int i = init; i < taille; i++) {
+				for (String s : textes[i]) {
+					roots[i] = ajouterBRD(roots[i], s);
+				}
+			}
+		});
+		threads[1].start();
+
+		threads[2] = new Thread(() -> {
+			int taille = roots.length;
+			int init = 1 + 2 * roots.length / 3;
+			for (int i = init; i < taille; i++) {
+				for (String s : textes[i]) {
+					roots[i] = ajouterBRD(roots[i], s);
+				}
+			}
+		});
+		threads[2].start();
+
+		int taille = roots.length / 3;
+		int init = 0;
+		threads[0].join();
+		for (int i = init; i < taille; i++) {
+			root = ArbreBRD.fusionBRD(root, roots[i]);
 		}
-		NoeudBRD root1[] = new NoeudBRD[2];
 
-		new Thread(() -> {
-			for (int i = 0; i < roots.length / 2; i++) {
-				try {
-					threads[i].join();
-					root1[0] = ArbreBRD.fusionBRD(root1[0], roots[i]);
-				} catch (Exception e) {
-					e.printStackTrace();
+		taille = 2 * roots.length / 3;
+		init = 1 + roots.length / 3;
+		threads[1].join();
+		for (int i = init; i < taille; i++) {
+			root = ArbreBRD.fusionBRD(root, roots[i]);
+		}
+
+		taille = roots.length;
+		init = 1 + 2 * roots.length / 3;
+		threads[2].join();
+		for (int i = init; i < taille; i++) {
+			root = ArbreBRD.fusionBRD(root, roots[i]);
+		}
+
+		return System.currentTimeMillis() - debut;
+
+	}
+
+	public static NoeudBRD shakespear() throws IOException,
+			InterruptedException {
+		File repertoire = new File(REPERTOIRE);
+		final File[] files = repertoire.listFiles();
+		NoeudBRD roots[] = new NoeudBRD[files.length];
+		Thread threads[] = new Thread[files.length];
+		Input input;
+		NoeudBRD root = null;
+		String textes[][] = new String[files.length][];
+		for (int i = 0; i < files.length; i++) {
+			input = new InputFromFile(files[i]);
+			textes[i] = input.getText().split("\n");
+		}
+
+		threads[0] = new Thread(() -> {
+			int taille = roots.length / 3;
+			int init = 0;
+			for (int i = init; i < taille; i++) {
+				for (String s : textes[i]) {
+					roots[i] = ajouterBRD(roots[i], s);
 				}
 			}
 		});
-
-		new Thread(() -> {
-			for (int i = 1 + roots.length / 2; i < roots.length; i++) {
-				try {
-					threads[i].join();
-					root1[1] = ArbreBRD.fusionBRD(root1[1], roots[i]);
-				} catch (Exception e) {
-					e.printStackTrace();
+		threads[0].start();
+		threads[1] = new Thread(() -> {
+			int taille = 2 * roots.length / 3;
+			int init = 1 + roots.length / 3;
+			for (int i = init; i < taille; i++) {
+				for (String s : textes[i]) {
+					roots[i] = ajouterBRD(roots[i], s);
 				}
 			}
 		});
-		root = ArbreBRD.fusionBRD(root1[0], root1[1]);
-		long temps = System.currentTimeMillis() - debut;
+		threads[1].start();
+
+		threads[2] = new Thread(() -> {
+			int taille = roots.length;
+			int init = 1 + 2 * roots.length / 3;
+			for (int i = init; i < taille; i++) {
+				for (String s : textes[i]) {
+					roots[i] = ajouterBRD(roots[i], s);
+				}
+			}
+		});
+		threads[2].start();
+
+		int taille = roots.length / 3;
+		int init = 0;
+		threads[0].join();
+		for (int i = init; i < taille; i++) {
+			root = ArbreBRD.fusionBRD(root, roots[i]);
+		}
+
+		taille = 2 * roots.length / 3;
+		init = 1 + roots.length / 3;
+		threads[1].join();
+		for (int i = init; i < taille; i++) {
+			root = ArbreBRD.fusionBRD(root, roots[i]);
+		}
+
+		taille = roots.length;
+		init = 1 + 2 * roots.length / 3;
+		threads[2].join();
+		for (int i = init; i < taille; i++) {
+			root = ArbreBRD.fusionBRD(root, roots[i]);
+		}
 
 		File f = new File("affiche.txt");
 		FileOutputStream fs = new FileOutputStream(f);
@@ -203,8 +293,7 @@ public class Presentation {
 		bw.write(aff);
 		bw.flush();
 		bw.close();
-
-		return temps;
+		return root;
 
 	}
 
