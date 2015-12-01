@@ -17,12 +17,13 @@ public class Presentation {
 	protected static String REPERTOIRE = "shakespear";
 	protected static int TAILLE_TAB = 20;
 
-	public static void main(String[] args) throws IOException {
-		// NoeudBRD root = null;
+	public static void main(String[] args) throws IOException, InterruptedException {
 		// exo1_3();
-		// System.out.println("temps en milliseconde ajout successifs : " +
-		// shakespear(root));
-		exo5_12();
+		// exo5_12();
+
+		System.out.println("temps en milliseconde ajout successifs : " + shakespearParAddtionSuccessif());
+//		System.out.println("temps en milliseconde fusion successifs : " + shakespearParFusion());
+//		System.out.println("temps en milliseconde fusionThread successifs : " + shakespearParFusionThread(root));
 	}
 
 	public static void exo1_3() {
@@ -40,7 +41,7 @@ public class Presentation {
 
 	public static void exo5_12() throws IOException {
 		NoeudBRD root = null;
-		long shakespearTemps = shakespear(root);
+		long shakespearTemps = shakespearParAddtionSuccessif();
 		Input input = new InputFromFile(new File("jeu_test2.txt"));
 		String[] tests = input.getText().split("\n");
 		long tabTemps[] = new long[tests.length];
@@ -71,13 +72,20 @@ public class Presentation {
 
 	}
 
-	public static long shakespear(NoeudBRD root) throws IOException {
+	/**
+	 * 
+	 * @param root
+	 * @return
+	 * @throws IOException
+	 */
+	public static long shakespearParAddtionSuccessif() throws IOException {
 		File repertoire = new File(REPERTOIRE);
 		final File[] files = repertoire.listFiles();
-
+		NoeudBRD root = null;
 		StringBuffer sb = new StringBuffer();
+		Input input;
 		for (File file : files) {
-			Input input = new InputFromFile(file);
+			input = new InputFromFile(file);
 			for (String s : input.getText().split("\n")) {
 				sb.append(s);
 				sb.append(" ");
@@ -100,4 +108,104 @@ public class Presentation {
 
 		return temps;
 	}
+
+	/**
+	 * 
+	 * @param root
+	 * @return
+	 * @throws IOException
+	 */
+	public static long shakespearParFusion() throws IOException {
+		File repertoire = new File(REPERTOIRE);
+		final File[] files = repertoire.listFiles();
+		NoeudBRD roots[] = new NoeudBRD[files.length];
+		Input input;
+		NoeudBRD root = null;
+		String textes[][] = new String[files.length][];
+		for (int i = 0; i < files.length; i++) {
+			input = new InputFromFile(files[i]);
+			textes[i] = input.getText().split("\n");
+		}
+
+		long debut = System.currentTimeMillis();
+		for (int i = 0; i < files.length; i++) {
+			for (String s : textes[i]) {
+				roots[i] = ajouterBRD(roots[i], s);
+			}
+			root = ArbreBRD.fusionBRD(root, roots[i]);
+		}
+		long temps = System.currentTimeMillis() - debut;
+
+		File f = new File("affiche.txt");
+		FileOutputStream fs = new FileOutputStream(f);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fs));
+		String aff = ArbreBRD.afficheBRD(root).toString();
+		bw.write(aff);
+		bw.flush();
+		bw.close();
+
+		return temps;
+
+	}
+
+	public static long shakespearParFusionThread(NoeudBRD root) throws IOException, InterruptedException {
+		File repertoire = new File(REPERTOIRE);
+		final File[] files = repertoire.listFiles();
+		NoeudBRD roots[] = new NoeudBRD[files.length];
+		Thread threads[] = new Thread[files.length];
+		Input input;
+		String textes[][] = new String[files.length][];
+		for (int i = 0; i < files.length; i++) {
+			input = new InputFromFile(files[i]);
+			textes[i] = input.getText().split("\n");
+		}
+
+		long debut = System.currentTimeMillis();
+		for (int i = 0; i < roots.length; i++) {
+			final int c = i;
+			threads[c] = new Thread(() -> {
+				for (String s : textes[c]) {
+					roots[c] = ajouterBRD(roots[c], s);
+				}
+			});
+			threads[c].start();
+		}
+		NoeudBRD root1[] = new NoeudBRD[2];
+
+		new Thread(() -> {
+			for (int i = 0; i < roots.length / 2; i++) {
+				try {
+					threads[i].join();
+					root1[0] = ArbreBRD.fusionBRD(root1[0], roots[i]);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		new Thread(() -> {
+			for (int i = 1 + roots.length / 2; i < roots.length; i++) {
+				try {
+					threads[i].join();
+					root1[1] = ArbreBRD.fusionBRD(root1[1], roots[i]);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		root = ArbreBRD.fusionBRD(root1[0], root1[1]);
+		long temps = System.currentTimeMillis() - debut;
+
+		File f = new File("affiche.txt");
+		FileOutputStream fs = new FileOutputStream(f);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fs));
+		String aff = ArbreBRD.afficheBRD(root).toString();
+		bw.write(aff);
+		bw.flush();
+		bw.close();
+
+		return temps;
+
+	}
+
 }
