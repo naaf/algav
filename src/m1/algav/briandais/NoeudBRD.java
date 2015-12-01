@@ -6,7 +6,6 @@ public class NoeudBRD {
 	private NoeudBRD frere;
 
 	public NoeudBRD() {
-//		this.cle = '\0';
 		this.fils = null;
 		this.frere = null;
 	}

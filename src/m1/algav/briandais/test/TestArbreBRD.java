@@ -3,7 +3,6 @@ package m1.algav.briandais.test;
 import static m1.algav.briandais.ArbreBRD.ajouterBRD;
 import static m1.algav.briandais.ArbreBRD.comptageMots;
 import static m1.algav.briandais.ArbreBRD.largeur;
-import static m1.algav.briandais.ArbreBRD.prefixeBRD;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -27,7 +26,7 @@ public class TestArbreBRD {
 		root = ajouterBRD(root, "valise");
 		root = ajouterBRD(root, "calculatrice");
 		root = ajouterBRD(root, "plateau");
-//		root = ajouterBRD(root, "plat");
+		root = ajouterBRD(root, "plat");
 
 	}
 
@@ -36,11 +35,7 @@ public class TestArbreBRD {
 		System.out.println("**************************");
 	}
 
-	@Test
-	public void testConstArbreBRD() {
-		NoeudBRD n = ArbreBRD.constArbreBRD("Ashraf");
-		System.out.println(n);
-	}
+	
 
 	@Test
 	public void testLargeur() {
@@ -71,8 +66,9 @@ public class TestArbreBRD {
 
 	@Test
 	public void testPrefixe() {
-		int c = prefixeBRD(root, "za");
-		System.out.println("nb prefixe za: " + c);
+		Assert.assertEquals(1, ArbreBRD.prefixeBRD(root, "bouclier"));
+		Assert.assertEquals(2, ArbreBRD.prefixeBRD(root, "plat"));
+		Assert.assertEquals(0, ArbreBRD.prefixeBRD(root, "inexistant"));
 	}
 
 	@Test
@@ -145,5 +141,6 @@ public class TestArbreBRD {
 	
 
 	}
+	
 
 }
