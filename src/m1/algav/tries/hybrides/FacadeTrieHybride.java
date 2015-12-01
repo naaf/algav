@@ -48,32 +48,106 @@ public class FacadeTrieHybride {
 		return ((TrieHybride)abr).getFilsSup();
 	} 
 	
+	/*Partie Affichage---------------*/
+	/*calucul de nombre de noeud*/
+	private static String AfficheTrieHybride(ITrieHybride abr){
+		int hauteur=0;
+		List<ITrieHybride> list = ConstListPourAffichage(abr);
+		if(list.size()==0)
+			return "TrieHybride Vide";
+		for(int i=list.size(); i>2; i=i/3){
+			hauteur++;
+		}
+		
+	}
+	
+	
+	private static int NbNoeud(ITrieHybride abr){
+		int n = Hauteur(abr);
+		int nbNoeud=0;
+		if(n==0)
+			return 0;
+		for(int i=0; i<n; i++){/*n appartien à [1,N] et i a [0,N-1] */
+			nbNoeud += Math.pow(3, i);
+		}
+		return nbNoeud;
+	}
+	
+	
+	
+	/*construction d'une liste des noeu*/
+	private static List<ITrieHybride> ConstListPourAffichage(ITrieHybride abr){
+		List<ITrieHybride> list= new ArrayList<ITrieHybride>();
+		int nbNoeud = NbNoeud(abr);
+		for (int i = 0; i < nbNoeud; i++) {
+			  list.add(null);
+		}
+		if(EstTrieHyprideVide(abr))
+			return list;
+		list.add(0, abr);
+		ConstListRec(abr, list, 0);
+		return list;
+		
+	}
+	
+	/*construction liste en rec*/
+	private static void ConstListRec(ITrieHybride abr, List<ITrieHybride> list, int postion ){
+		ITrieHybride abrInf = abr.getFilsInf();
+		ITrieHybride abrEqual = abr.getFilsEqual();
+		ITrieHybride abrSup = abr.getFilsSup();
+		
+		if(!EstTrieHyprideVide(abrInf)){
+			list.set((postion*3)+1, abrInf);
+			ConstListRec(abrInf, list, list.indexOf(abrInf) );
+		}
+		
+		if(!EstTrieHyprideVide(abrEqual)){
+			list.set((postion*3)+2, abrEqual);
+			ConstListRec(abrEqual, list, list.indexOf(abrEqual) );
+		}
+		
+		if(!EstTrieHyprideVide(abrSup)){
+			list.set((postion*3)+3, abrSup);
+			ConstListRec(abrSup, list, list.indexOf(abrSup) );
+		}
+	}
 	
 	/*ajout d'un mot dans un arbre*/
-	public static void AjouteMot(ITrieHybride abr, String mot){
+	public static ITrieHybride AjouteMot(ITrieHybride abr, String mot){
 		char tete, noeudChar;
 		String queu;
 		if(FacadeMot.EstMotVide(mot))
-			return;
+			return abr;
 		tete=FacadeMot.teteMot(mot);
 		queu=FacadeMot.queuMot(mot);
 		if(EstTrieHyprideVide(abr)){
+			//System.out.println("est vide");
 			abr=TrieHyprideNoeud(tete);
-			AjouteMot(abr.getFilsEqual(), queu);
-			return;
+			if(queu == null){
+				abr.setValeur(1);
+			}else{
+				abr.setFilsEqual(AjouteMot(null, queu));
+			}
+			//System.out.println(abr.toString());
+			return abr;
 		}else{
 			noeudChar=abr.getCaractere();
 			if( noeudChar == tete){
-				AjouteMot(abr.getFilsEqual(), queu);
+				if(queu == null){
+					abr.setValeur(1);
+					return abr;
+				}
+				abr.setFilsEqual(AjouteMot(abr.getFilsEqual(), queu));
 			}else{
 				if( noeudChar > tete){
-					AjouteMot(abr.getFilsInf(), mot);	
+					abr.setFilsInf(AjouteMot(abr.getFilsInf(), mot));	
 				}else{
-					AjouteMot(abr.getFilsSup(), mot);	
+					abr.setFilsSup(AjouteMot(abr.getFilsSup(), mot));	
 					
 				}
 			}
 		}
+		return abr;
 		
 	}
 	
@@ -86,8 +160,11 @@ public class FacadeTrieHybride {
 		tete=FacadeMot.teteMot(mot);
 		queu=FacadeMot.queuMot(mot);
 		noeudChar = CharNoeud(abr);
-		if(noeudChar == tete)
+		if(noeudChar == tete){
+			if(queu == null && abr.getValeur()>0)
+				return true;
 			return Recherche(abr.getFilsEqual(), queu);
+		}
 		if(noeudChar > tete)
 			return Recherche(abr.getFilsSup(), mot);
 		return Recherche(abr.getFilsInf(), mot);
@@ -152,28 +229,45 @@ public class FacadeTrieHybride {
 	
 	/*Profondeur moyen*/
 	public static int ProfondeurMoyenne(ITrieHybride abr){
-		CouplePronfodeurFeuille couple = new CouplePronfodeurFeuille(0, 0);
+		CouplePronfodeurFeuille couple = new CouplePronfodeurFeuille();
 		couple = NombreProfondeurFeuille(abr, couple);
-		if(couple.getNbFeuille()<1)
+		if(couple.estVide())
 			return 0;
 		return couple.getProfondeur()/couple.getNbFeuille();
 	}
 	
 	
 	private static CouplePronfodeurFeuille NombreProfondeurFeuille(ITrieHybride abr, CouplePronfodeurFeuille couple){
-		CouplePronfodeurFeuille coupletmp;
+		CouplePronfodeurFeuille coupletmpInf, coupletmpEqual, coupletmpSup;
+		int sommeProf=0;
+		int nbFeuille=0;
 		if(EstTrieHyprideVide(abr))
-			return couple;
-		coupletmp=couple;	
+			return new CouplePronfodeurFeuille();/*renvoi couple (0,0)*/
+	
 		couple.upProfondeur();
-		couple = NombreProfondeurFeuille(abr.getFilsInf(), couple);
-		couple = NombreProfondeurFeuille(abr.getFilsEqual(), couple);
-		couple = NombreProfondeurFeuille(abr.getFilsSup(), couple);
+		coupletmpInf = NombreProfondeurFeuille(abr.getFilsInf(), couple);
+		coupletmpEqual = NombreProfondeurFeuille(abr.getFilsEqual(), couple);
+		coupletmpSup = NombreProfondeurFeuille(abr.getFilsSup(), couple);
 		
-		if(coupletmp.equals(couple))
+		if(coupletmpInf.estVide() && coupletmpEqual.estVide() && coupletmpSup.estVide() ){
 			couple.upNbFeuille();
+			return couple;
+		}
+		sommeProf = coupletmpInf.getProfondeur() + coupletmpEqual.getProfondeur() + coupletmpSup.getProfondeur();
+		nbFeuille = coupletmpInf.getNbFeuille() + coupletmpEqual.getNbFeuille() + coupletmpSup.getNbFeuille();
+		couple.setProfondeur(sommeProf);
+		couple.setNbFeuille(nbFeuille);
+		
 		return couple;
 			
+	}
+	
+	
+	
+	/*prefixe arbre mot*/
+	public static int Prefixe(ITrieHybride abr, String mot){
+		return 0;
+		
 	}
 }
 

@@ -48,10 +48,23 @@ public class TrieHybride implements ITrieHybride {
 	public void setFilsSup(ITrieHybride filsSup) {
 		FilsSup = filsSup;
 	}
+	
 	@Override
 	public String toString() {
-		return "["+caractere + "," + valeur +"]"+ FilsEqual + FilsInf + FilsSup;
+		String abrInf = null, abrEqual = null, abrSup = null;
+		if(this.FilsInf != null)
+			abrInf = this.FilsInf.toString();
+		if(this.FilsEqual != null)
+			abrEqual = this.FilsEqual.toString();
+		if(this.FilsSup != null)
+			abrSup = this.FilsSup.toString();
+		
+		
+	
+		return "  ("+this.caractere+","+this.valeur+")\n /  |  \\\n" + abrInf +" " + abrEqual +" "+ abrSup;
 	}
+	
+	
 	
 	
 	
