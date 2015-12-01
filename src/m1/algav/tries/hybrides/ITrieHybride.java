@@ -13,5 +13,6 @@ public interface ITrieHybride {
 	public ITrieHybride getFilsSup();
 	public void setFilsSup(ITrieHybride filsSup);
 
+
 	
 }
