@@ -22,7 +22,8 @@ public class Presentation {
 		exo1_3();
 		exo5_12();
 
-		shakespear();
+		NoeudBRD root = null;
+		root = shakespear();
 		System.out
 				.println("temps en milliseconde ajout successifs (shakespear): "
 						+ shakespearParAddtionSuccessif());
@@ -30,6 +31,8 @@ public class Presentation {
 				+ shakespearParFusion());
 		System.out.println("temps en milliseconde fusionThread (shakespear): "
 				+ shakespearParFusionThread());
+		System.out.println("Hauteur de (shakespear) : " + ArbreBRD.hauteur(root));
+		System.out.println("profondeur Moyenne de (shakespear) : " + ArbreBRD.profondeurMoyenne(root));
 	}
 
 	public static void exo1_3() {
