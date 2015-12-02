@@ -1,11 +1,13 @@
 package m1.algav.briandais;
 
 public class NoeudBRD {
+	static final char MOT_NULL = '\0';
 	private char cle;
 	private NoeudBRD fils;
 	private NoeudBRD frere;
 
 	public NoeudBRD() {
+		this.cle = MOT_NULL;
 		this.fils = null;
 		this.frere = null;
 	}

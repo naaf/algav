@@ -359,37 +359,30 @@ public class ArbreBRD {
 
 	}
 
-	/**
-	 * 
-	 * @param a
-	 * @param b
-	 * @return precondition b not null
-	 */
-
-	public static NoeudBRD trieToBRD(ITrieHybride a, NoeudBRD b) {
-		NoeudBRD root = null;
+	public static NoeudBRD trieToBRD(ITrieHybride a) {
 		if (a == null)
-			return b;
-		
-		// parcours infixe
-		b  = trieToBRD(a.getFilsInf(), b);
-		System.out.println(a.getCaractere());
-		
-		if (b == null) {
-			b = new NoeudBRD(a.getCaractere());
-			root = b;
-		}else{
-			root = b;
-			b.setFrere(new NoeudBRD(a.getCaractere()));
-			b = b.getFrere();
-		}
-		
-		b.setFils(trieToBRD(a.getFilsEqual(), null));
-		
-		
-		trieToBRD(a.getFilsSup(), root);
+			return null;
+		NoeudBRD root = new NoeudBRD();
+		convert(a, root);
+		return root.getFrere();
+	}
 
-		return root;
+	public static NoeudBRD convert(ITrieHybride a, NoeudBRD b) {
+
+		if (a.getFilsInf() != null) {
+			b = convert(a.getFilsInf(), b);
+		}
+
+		// infixe
+		System.out.println(a.getCaractere());
+		NoeudBRD cur = new NoeudBRD(a.getCaractere());
+		cur.setFils(trieToBRD(a.getFilsEqual()));
+		b.setFrere(cur);
+
+		if (a.getFilsSup() != null)
+			cur = convert(a.getFilsSup(), cur);
+
+		return cur;
 	}
 
 }

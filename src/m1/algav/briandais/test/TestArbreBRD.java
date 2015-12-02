@@ -152,7 +152,8 @@ public class TestArbreBRD {
 		abr = FacadeTrieHybride.AjouteMot(abr, "crayon");
 		abr = FacadeTrieHybride.AjouteMot(abr, "carton");
 		List<String> l = FacadeTrieHybride.ListeMots(abr);
-		NoeudBRD n = ArbreBRD.trieToBRD(abr, null);
+		NoeudBRD n = ArbreBRD.trieToBRD(abr);
+
 		System.out.println(ArbreBRD.afficheBRD(n));
 		System.out.println(l);
 	}
