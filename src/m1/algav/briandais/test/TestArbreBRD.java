@@ -4,6 +4,8 @@ import static m1.algav.briandais.ArbreBRD.ajouterBRD;
 import static m1.algav.briandais.ArbreBRD.comptageMots;
 import static m1.algav.briandais.ArbreBRD.largeur;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -11,6 +13,8 @@ import org.junit.Test;
 
 import m1.algav.briandais.ArbreBRD;
 import m1.algav.briandais.NoeudBRD;
+import m1.algav.tries.hybrides.FacadeTrieHybride;
+import m1.algav.tries.hybrides.ITrieHybride;
 
 public class TestArbreBRD {
 
@@ -35,8 +39,6 @@ public class TestArbreBRD {
 		System.out.println("**************************");
 	}
 
-	
-
 	@Test
 	public void testLargeur() {
 		NoeudBRD n = ArbreBRD.constArbreBRD("ashraf");
@@ -46,7 +48,7 @@ public class TestArbreBRD {
 
 	@Test
 	public void testAffiche() {
-		
+
 		System.out.println(ArbreBRD.afficheBRD(root));
 	}
 
@@ -139,9 +141,20 @@ public class TestArbreBRD {
 		System.out.println("testFusionBRD: n + root" + ArbreBRD.listeMots(root));
 		Assert.assertTrue(ArbreBRD.comptageMots(root) == a + b);
 		ArbreBRD.afficheBRD(root);
-	
-
 	}
-	
+
+	@Test
+	public void testTrieToBDR() {
+		ITrieHybride abr = FacadeTrieHybride.AjouteMot(null, "cellule");
+		abr = FacadeTrieHybride.AjouteMot(abr, "cartable");
+		abr = FacadeTrieHybride.AjouteMot(abr, "arcle");
+		abr = FacadeTrieHybride.AjouteMot(abr, "table");
+		abr = FacadeTrieHybride.AjouteMot(abr, "crayon");
+		abr = FacadeTrieHybride.AjouteMot(abr, "carton");
+		List<String> l = FacadeTrieHybride.ListeMots(abr);
+		NoeudBRD n = ArbreBRD.trieToBRD(abr, null);
+		System.out.println(ArbreBRD.afficheBRD(n));
+		System.out.println(l);
+	}
 
 }

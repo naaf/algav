@@ -17,6 +17,13 @@ public class NoeudBRD {
 		this.frere = frere;
 	}
 
+	public NoeudBRD(char cle) {
+		super();
+		this.cle = cle;
+		this.fils = null;
+		this.frere = null;
+	}
+
 	public char getCle() {
 		return cle;
 	}
@@ -45,6 +52,5 @@ public class NoeudBRD {
 	public String toString() {
 		return "NoeudBRD [cle=" + cle + ", fils=" + fils + ", frere=" + frere + "]";
 	}
-	
 
 }
