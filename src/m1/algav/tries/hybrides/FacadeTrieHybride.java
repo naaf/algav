@@ -76,10 +76,11 @@ public class FacadeTrieHybride {
 		int pos=0;
 		int nbNoeud=(int) Math.pow(3, hauteur);
 		int nbSpaceNoeud=0;
+		int nbspacetrait=0;
 		
 		
 		String strSpace="";
-		String strTrait="";
+		String strTraitG="", strTraitD="";
 		ITrieHybride abrCur;
 		
 		for(int i=0; i<hauteur; i++){	
@@ -87,47 +88,64 @@ public class FacadeTrieHybride {
 			
 		}
 		for(int i=0; i<deg; i++){
-			nbSpaceNoeud = nbSpaceNoeud*3 +5;
+			nbspacetrait=nbSpaceNoeud;
+			nbSpaceNoeud = nbSpaceNoeud*3 +3;
 		}
 		for(int i=0; i<nbSpaceNoeud; i++){
 			strSpace += " ";
-			strTrait += "_"; 
+			if(i > nbspacetrait){
+				strTraitG += "_";
+				strTraitD = "_" + strTraitD;
+			}else{
+				strTraitG += " ";
+				strTraitD += " ";
+				
+			}
+				
 			
 		}
 		bf.setLength(0);
 		nbNoeud += pos;
 		for(int i=pos; i<nbNoeud; i++){
-			
-			if(i==pos){
-				bf.append(strSpace);
-			}else{
-			
-			bf.append(strTrait);
-			
-			}
-			abrCur=list.get(i);
-			
-				bf.append("__|__");
-			
-					
-			if(i==nbNoeud-1){
-				bf.append(strSpace);
-			}else{
-			
-			bf.append(strTrait);
-			
-			}
-		}
-		bf.append("\n");
-		for(int i=pos; i<nbNoeud; i++){
 			bf.append(strSpace);
 			abrCur=list.get(i);
 			if(EstTrieHyprideVide(abrCur)){
-				bf.append("  .  ");
+				bf.append("   ");
 			}else{
-				bf.append("("+abrCur.getCaractere()+","+abrCur.getValeur()+")");
+				bf.append(abrCur.getCaractere()+","+abrCur.getValeur());
 			}
 			bf.append(strSpace);
+		}
+		bf.append("\n");
+		
+		for(int i=pos; i<nbNoeud; i++){
+			
+			if(i==pos || EstTrieHyprideVide(list.get(i)) ){
+				bf.append(strSpace);
+			}else{
+				if(EstTrieHyprideVide(list.get(i).getFilsInf())){
+					bf.append(strSpace);
+				}else{	
+					bf.append(strTraitG);	
+				}
+			
+			}
+	
+			if(EstTrieHyprideVide(list.get(i))){
+				bf.append("   ");
+			}else{
+				bf.append("_|_");
+			}
+					
+			if(EstTrieHyprideVide(list.get(i))){
+				bf.append(strSpace);
+			}else{
+				if(EstTrieHyprideVide(list.get(i).getFilsSup())){
+					bf.append(strSpace);
+				}else{	
+					bf.append(strTraitD);	
+				}
+			}
 		}
 		bf.append("\n");
 		
@@ -140,7 +158,7 @@ public class FacadeTrieHybride {
 		int nbNoeud=0;
 		if(n==0)
 			return 0;
-		for(int i=0; i<n; i++){/*n appartien à [1,N] et i a [0,N-1] */
+		for(int i=0; i<n; i++){/*n appartien  [1,N] et i a [0,N-1] */
 			nbNoeud += Math.pow(3, i);
 			
 		}
@@ -190,6 +208,10 @@ public class FacadeTrieHybride {
 	
 	/*ajout d'un mot dans un arbre*/
 	public static ITrieHybride AjouteMot(ITrieHybride abr, String mot){
+		mot=mot.toLowerCase();
+		return AjouteMotRec(abr, mot);
+	}
+	private static ITrieHybride AjouteMotRec(ITrieHybride abr, String mot){
 		char tete, noeudChar;
 		String queu;
 		if(FacadeMot.EstMotVide(mot))
@@ -202,7 +224,7 @@ public class FacadeTrieHybride {
 			if(queu == null){
 				abr.setValeur(1);
 			}else{
-				abr.setFilsEqual(AjouteMot(null, queu));
+				abr.setFilsEqual(AjouteMotRec(null, queu));
 			}
 			//System.out.println(abr.toString());
 			return abr;
@@ -213,12 +235,12 @@ public class FacadeTrieHybride {
 					abr.setValeur(1);
 					return abr;
 				}
-				abr.setFilsEqual(AjouteMot(abr.getFilsEqual(), queu));
+				abr.setFilsEqual(AjouteMotRec(abr.getFilsEqual(), queu));
 			}else{
 				if( noeudChar > tete){
-					abr.setFilsInf(AjouteMot(abr.getFilsInf(), mot));	
+					abr.setFilsInf(AjouteMotRec(abr.getFilsInf(), mot));	
 				}else{
-					abr.setFilsSup(AjouteMot(abr.getFilsSup(), mot));	
+					abr.setFilsSup(AjouteMotRec(abr.getFilsSup(), mot));	
 					
 				}
 			}
@@ -229,6 +251,11 @@ public class FacadeTrieHybride {
 	
 	/*Recherche d'un mot dans l'arbre*/
 	public static boolean Recherche(ITrieHybride abr, String mot){
+		mot=mot.toLowerCase();
+		return RechercheRec(abr, mot);
+	}
+	
+	private static boolean RechercheRec(ITrieHybride abr, String mot){
 		char tete, noeudChar;
 		String queu;
 		if(EstTrieHyprideVide(abr) || FacadeMot.EstMotVide(mot))
@@ -239,11 +266,11 @@ public class FacadeTrieHybride {
 		if(noeudChar == tete){
 			if(queu == null && abr.getValeur()>0)
 				return true;
-			return Recherche(abr.getFilsEqual(), queu);
+			return RechercheRec(abr.getFilsEqual(), queu);
 		}
-		if(noeudChar > tete)
-			return Recherche(abr.getFilsSup(), mot);
-		return Recherche(abr.getFilsInf(), mot);
+		if(noeudChar < tete)
+			return RechercheRec(abr.getFilsSup(), mot);
+		return RechercheRec(abr.getFilsInf(), mot);
 			
 	}
 	
@@ -321,19 +348,20 @@ public class FacadeTrieHybride {
 			return new CouplePronfodeurFeuille();/*renvoi couple (0,0)*/
 	
 		couple.upProfondeur();
-		coupletmpInf = NombreProfondeurFeuille(abr.getFilsInf(), couple);
-		coupletmpEqual = NombreProfondeurFeuille(abr.getFilsEqual(), couple);
-		coupletmpSup = NombreProfondeurFeuille(abr.getFilsSup(), couple);
+		//System.out.println(couple);
+		coupletmpInf = NombreProfondeurFeuille(abr.getFilsInf(), new CouplePronfodeurFeuille(couple));
+		coupletmpEqual = NombreProfondeurFeuille(abr.getFilsEqual(), new CouplePronfodeurFeuille(couple));
+		coupletmpSup = NombreProfondeurFeuille(abr.getFilsSup(), new CouplePronfodeurFeuille(couple));
 		
 		if(coupletmpInf.estVide() && coupletmpEqual.estVide() && coupletmpSup.estVide() ){
 			couple.upNbFeuille();
 			return couple;
 		}
+		//System.out.println(coupletmpInf.toString() + coupletmpEqual.toString() + coupletmpSup.toString());
 		sommeProf = coupletmpInf.getProfondeur() + coupletmpEqual.getProfondeur() + coupletmpSup.getProfondeur();
 		nbFeuille = coupletmpInf.getNbFeuille() + coupletmpEqual.getNbFeuille() + coupletmpSup.getNbFeuille();
 		couple.setProfondeur(sommeProf);
 		couple.setNbFeuille(nbFeuille);
-		
 		return couple;
 			
 	}
@@ -342,8 +370,74 @@ public class FacadeTrieHybride {
 	
 	/*prefixe arbre mot*/
 	public static int Prefixe(ITrieHybride abr, String mot){
-		return 0;
+		
+		char tete, noeudChar;
+		String queu;
+		if(EstTrieHyprideVide(abr) || FacadeMot.EstMotVide(mot))
+			return 0;
+		tete = FacadeMot.teteMot(mot);
+		queu = FacadeMot.queuMot(mot);
+		noeudChar = CharNoeud(abr);
+		if(noeudChar == tete){
+			if(queu == null)
+				return ComptageMot(abr);
+		return Prefixe(abr.getFilsEqual(), queu);
+		}if(noeudChar < tete)
+			return Prefixe(abr.getFilsSup(), mot);
+		return Prefixe(abr.getFilsInf(), mot);
+	}
+	
+	/*supression mot*/
+	public static ITrieHybride Suppression(ITrieHybride abr, String mot){
+		char tete, noeudChar;
+		String queu;
+		ITrieHybride abrCur;
+		if(EstTrieHyprideVide(abr) || FacadeMot.EstMotVide(mot))
+			return abr;
+		tete = FacadeMot.teteMot(mot);
+		queu = FacadeMot.queuMot(mot);
+		noeudChar = CharNoeud(abr);	
+		if(noeudChar == tete){
+			//abr=sup;
+		}else{
+			if(noeudChar > tete){
+				abr.setFilsInf(Suppression(abr.getFilsInf(), mot));
+			}else{
+				abr.setFilsSup(Suppression(abr.getFilsSup(), mot));
+			}
+		}
+		return abr;
+	}
+	
+	private static ITrieHybride SuppressionRec(ITrieHybride abr, String mot){
+		/*char tete, noeudChar;
+		String queu;
+		tete = FacadeMot.teteMot(mot);
+		queu = FacadeMot.queuMot(mot);
+		noeudChar = CharNoeud(abr);
+		if(queu == null){
+			abr.setValeur(0);
+			return SuppressionChar(abr);
+		//}if(abr.getFilsEqual().getCaractere() )*/
+		return null;
+	}
+	
+	private static ITrieHybride SuppressionChar(ITrieHybride abr){
+		ITrieHybride abrDroit = abr.getFilsSup();
+		ITrieHybride abrGauche = abr.getFilsInf();
+		
+		if(abr.getValeur() > 0 || !EstTrieHyprideVide(abr.getFilsEqual()))
+			return abr;
+		return Reorganise(abrGauche, abrDroit);
+		
+		
 		
 	}
+	
+	private static ITrieHybride Reorganise(ITrieHybride abrGauche, ITrieHybride abrDroit){
+		if(EstTrieHyprideVide(abrGauche))
+			return abrDroit;
+		 abrGauche.setFilsSup(Reorganise(abrGauche.getFilsSup(), abrDroit));
+		 return abrGauche;
+	}
 }
-
