@@ -32,6 +32,7 @@ public class PresentationTrie {
 		System.out.println("************************************************");
 		System.out.println("HauteurTrie de (shakespear) : " + FacadeTrieHybride.Hauteur(root));
 		System.out.println("************************************************");
+		System.out.println("profondeur Moyenne Trie de (shakespear) : " + FacadeTrieHybride.ProfondeurMoyenne(root));
 
 	}
 
