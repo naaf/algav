@@ -19,25 +19,24 @@ public class PresentationBRD {
 	protected static int TAILLE_TAB = 20;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
+		
+		System.out.println("\n*********************Exemple de Base***************************");
 		exo1_3();
-		exo5_12();
 
+		System.out.println("\n*******************Construction de Shakespear*******************************");
 		NoeudBRD root = null;
 		root = shakespear();
-
-		System.out
-				.println("temps en milliseconde ajoutBRD successifs (shakespear): " + shakespearParAddtionSuccessif());
-		System.out.println("************************************************");
-		System.out.println("temps en milliseconde fusionBRD (shakespear): " + shakespearParFusion());
-		System.out.println("************************************************");
-		System.out.println("temps en milliseconde fusionThreadBRD (shakespear): " + shakespearParFusionThread());
-		System.out.println("************************************************");
+		System.out.println("temps en milliseconde ajoutBRD successifs (shakespear): " + shakespearParAddtionSuccessif());
 		System.out.println("HauteurBRD de (shakespear) : " + ArbreBRD.hauteur(root));
-		System.out.println("************************************************");
 		System.out.println("profondeur Moyenne BRD de (shakespear) : " + ArbreBRD.profondeurMoyenne(root));
-		System.out.println("************************************************");
-		System.out.println("temps en nanoseconde conversion (TrieToBRD) " + convert());
-
+		
+		
+		System.out.println("\ntemps en milliseconde fusionBRD (shakespear): " + shakespearParFusion());
+		System.out.println("\ntemps en milliseconde fusionThreadBRD (shakespear): " + shakespearParFusionThread());
+		System.out.println("\ntemps en nanoseconde conversion (TrieToBRD) " + convert());
+		
+		System.out.println("\n**********************Ajout de mots dans shakespear**************************");
+		exo5_12();
 	}
 
 	public static void exo1_3() {
@@ -54,7 +53,6 @@ public class PresentationBRD {
 		}
 		long temps = System.nanoTime() - debut;
 		System.out.println(ArbreBRD.afficheBRD(root));
-		System.out.println(ArbreBRD.listeMots(root));
 		System.out.println("temps en nanoseconde ajout successifs : " + temps);
 	}
 
@@ -79,11 +77,15 @@ public class PresentationBRD {
 		}
 		total = System.nanoTime() - total;
 
-		System.out.println("temps en nanoseconde ajout successifs mots : " + Arrays.toString(mesureTimes));
+		System.out.println("temps en nanoseconde ajout successifs mots (mot,temps) :" );
+		for (int i = 0; i < jeuTestMots.length; i++) {
+			 System.out.println("["+jeuTestMots[i]+","+mesureTimes[i]+"]");
+			mesureTimes[i] = System.nanoTime() - debut;
+		}
 		System.out.println("temps en nanoseconde ajout successifs 20 mots " + total);
 		System.out.println("temps moyenne d'un ajout en nanoseconde ==> " + total / jeuTestMots.length);
-		System.out.println("************************************************");
-
+		
+		System.out.println("\n*******************Recherche dans Shakespear*****************************");
 		// recherche
 		total = System.nanoTime();
 		for (int i = 0; i < jeuTestMots.length; i++) {
@@ -92,13 +94,17 @@ public class PresentationBRD {
 			mesureTimes[i] = System.nanoTime() - debut;
 		}
 		total = System.nanoTime() - total;
-		System.out.println("temps en nanoseconde (recherche) successifs mots : " + Arrays.toString(mesureTimes));
+		
+		for (int i = 0; i < jeuTestMots.length; i++) {
+			 System.out.println("["+jeuTestMots[i]+","+mesureTimes[i]+"]");
+			mesureTimes[i] = System.nanoTime() - debut;
+		}
 		System.out.println("temps en nanoseconde (recherche) successifs 20 mots " + total);
 		System.out.println("temps moyenne d'un (recherche) en nanoseconde ==> " + total / jeuTestMots.length);
-		System.out.println("************************************************");
 
 		// Suppression
-
+		System.out.println("\n*******************suppression dans Shakespear*****************************");
+		
 		total = System.nanoTime();
 		for (int i = 0; i < mesureTimes.length; i++) {
 			debut = System.nanoTime();
@@ -106,7 +112,10 @@ public class PresentationBRD {
 			mesureTimes[i] = System.nanoTime() - debut;
 		}
 		total = System.nanoTime() - total;
-		System.out.println("temps en nanoseconde (suppression) successifs mots : " + Arrays.toString(mesureTimes));
+		for (int i = 0; i < jeuTestMots.length; i++) {
+			 System.out.println("["+jeuTestMots[i]+","+mesureTimes[i]+"]");
+			mesureTimes[i] = System.nanoTime() - debut;
+		}
 		System.out.println("temps en nanoseconde (suppression) successifs 20 mots " + total);
 		System.out.println("temps moyenne d'un (suppression) en nanoseconde ==> " + total / jeuTestMots.length);
 		System.out.println("************************************************");
