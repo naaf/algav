@@ -61,7 +61,7 @@ public class TrieHybride implements ITrieHybride {
 		
 		
 	
-		return "  ("+this.caractere+","+this.valeur+")\n /  |  \\\n" + abrInf +" " + abrEqual +" "+ abrSup;
+		return "  ("+this.caractere+","+this.valeur+")";
 	}
 	
 	

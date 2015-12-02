@@ -50,15 +50,88 @@ public class FacadeTrieHybride {
 	
 	/*Partie Affichage---------------*/
 	/*calucul de nombre de noeud*/
-	private static String AfficheTrieHybride(ITrieHybride abr){
+	public static void AfficheTrieHybride(ITrieHybride abr){
 		int hauteur=0;
+		StringBuffer bf= new StringBuffer();
 		List<ITrieHybride> list = ConstListPourAffichage(abr);
-		if(list.size()==0)
-			return "TrieHybride Vide";
+		if(list.size()==0){
+			System.out.println("TrieHybride Vide");
+			return;
+			
+		}
 		for(int i=list.size(); i>2; i=i/3){
 			hauteur++;
 		}
 		
+		for(int i=hauteur; i>-1; i--){
+			bf.append(AfficheNoeud(list, i, hauteur-i));
+		}
+		
+		System.out.println(bf);;
+		
+	}
+	
+	private static StringBuffer AfficheNoeud(List<ITrieHybride> list, int deg, int hauteur){
+		StringBuffer bf= new StringBuffer();
+		int pos=0;
+		int nbNoeud=(int) Math.pow(3, hauteur);
+		int nbSpaceNoeud=0;
+		
+		
+		String strSpace="";
+		String strTrait="";
+		ITrieHybride abrCur;
+		
+		for(int i=0; i<hauteur; i++){	
+			pos = pos*3 +1;
+			
+		}
+		for(int i=0; i<deg; i++){
+			nbSpaceNoeud = nbSpaceNoeud*3 +5;
+		}
+		for(int i=0; i<nbSpaceNoeud; i++){
+			strSpace += " ";
+			strTrait += "_"; 
+			
+		}
+		bf.setLength(0);
+		nbNoeud += pos;
+		for(int i=pos; i<nbNoeud; i++){
+			
+			if(i==pos){
+				bf.append(strSpace);
+			}else{
+			
+			bf.append(strTrait);
+			
+			}
+			abrCur=list.get(i);
+			
+				bf.append("__|__");
+			
+					
+			if(i==nbNoeud-1){
+				bf.append(strSpace);
+			}else{
+			
+			bf.append(strTrait);
+			
+			}
+		}
+		bf.append("\n");
+		for(int i=pos; i<nbNoeud; i++){
+			bf.append(strSpace);
+			abrCur=list.get(i);
+			if(EstTrieHyprideVide(abrCur)){
+				bf.append("  .  ");
+			}else{
+				bf.append("("+abrCur.getCaractere()+","+abrCur.getValeur()+")");
+			}
+			bf.append(strSpace);
+		}
+		bf.append("\n");
+		
+		return bf;
 	}
 	
 	
@@ -69,6 +142,7 @@ public class FacadeTrieHybride {
 			return 0;
 		for(int i=0; i<n; i++){/*n appartien à [1,N] et i a [0,N-1] */
 			nbNoeud += Math.pow(3, i);
+			
 		}
 		return nbNoeud;
 	}
@@ -82,10 +156,12 @@ public class FacadeTrieHybride {
 		for (int i = 0; i < nbNoeud; i++) {
 			  list.add(null);
 		}
+		
 		if(EstTrieHyprideVide(abr))
 			return list;
-		list.add(0, abr);
+		list.set(0, abr);
 		ConstListRec(abr, list, 0);
+		
 		return list;
 		
 	}
