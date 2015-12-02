@@ -13,7 +13,7 @@ public class FacadeMot {
 	}
 	
 	public static boolean EstMotVide(String mot){
-		return (mot == null);
+		return (mot == null) || (mot == "");
 	}
 
 }

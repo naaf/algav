@@ -12,6 +12,12 @@ public class CouplePronfodeurFeuille {
 		this.nbFeuille = 0;
 	}
 	
+	public CouplePronfodeurFeuille(CouplePronfodeurFeuille p) {
+		super();
+		this.profondeur = p.profondeur;
+		this.nbFeuille = p.nbFeuille;
+	}
+	
 	public CouplePronfodeurFeuille(int profondeur, int nbFeuille) {
 		super();
 		this.profondeur = profondeur;
@@ -44,6 +50,11 @@ public class CouplePronfodeurFeuille {
 		return false;
 	} 
 	
+	@Override
+	public String toString() {
+		return "["+this.profondeur +","+this.nbFeuille+"]";
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
