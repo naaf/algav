@@ -374,7 +374,6 @@ public class ArbreBRD {
 		}
 
 		// infixe
-		System.out.println(a.getCaractere());
 		NoeudBRD cur = new NoeudBRD(a.getCaractere());
 		cur.setFils(trieToBRD(a.getFilsEqual()));
 		b.setFrere(cur);
