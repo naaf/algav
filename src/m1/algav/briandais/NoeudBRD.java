@@ -1,11 +1,13 @@
 package m1.algav.briandais;
 
 public class NoeudBRD {
+	static final char MOT_NULL = '\0';
 	private char cle;
 	private NoeudBRD fils;
 	private NoeudBRD frere;
 
 	public NoeudBRD() {
+		this.cle = MOT_NULL;
 		this.fils = null;
 		this.frere = null;
 	}
@@ -15,6 +17,13 @@ public class NoeudBRD {
 		this.cle = cle;
 		this.fils = fils;
 		this.frere = frere;
+	}
+
+	public NoeudBRD(char cle) {
+		super();
+		this.cle = cle;
+		this.fils = null;
+		this.frere = null;
 	}
 
 	public char getCle() {
@@ -45,6 +54,5 @@ public class NoeudBRD {
 	public String toString() {
 		return "NoeudBRD [cle=" + cle + ", fils=" + fils + ", frere=" + frere + "]";
 	}
-	
 
 }

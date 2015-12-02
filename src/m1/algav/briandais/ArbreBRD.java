@@ -3,12 +3,14 @@ package m1.algav.briandais;
 import java.util.ArrayList;
 import java.util.List;
 
+import m1.algav.tries.hybrides.ITrieHybride;
+
 public class ArbreBRD {
 	static final char FIN_MOT = '#';
 	static final char MOT_NULL = '\0';
 	static final String SEPERATOR_VER = "|";
 	static final String SEPERATOR_HOR = "-";
-	static final int SEPERATOR_UNIT = 2;
+	static final int SEPERATOR_UNIT = 3;
 	static final String SPACE = " ";
 
 	public static NoeudBRD constArbreBRD(String m) {
@@ -52,7 +54,7 @@ public class ArbreBRD {
 			sb.append(SPACE);
 		}
 		buf.append(sb);
-		
+
 		// affiche cle
 		buf.append(abr.getCle());
 
@@ -129,7 +131,7 @@ public class ArbreBRD {
 			}
 
 		} while (!fileBRD.isEmpty() || p != null);
-		
+
 		return buf;
 	}
 
@@ -355,6 +357,31 @@ public class ArbreBRD {
 			}
 		}
 
+	}
+
+	public static NoeudBRD trieToBRD(ITrieHybride a) {
+		if (a == null)
+			return null;
+		NoeudBRD root = new NoeudBRD();
+		convert(a, root);
+		return root.getFrere();
+	}
+
+	public static NoeudBRD convert(ITrieHybride a, NoeudBRD b) {
+
+		if (a.getFilsInf() != null) {
+			b = convert(a.getFilsInf(), b);
+		}
+
+		// infixe
+		NoeudBRD cur = new NoeudBRD(a.getCaractere());
+		cur.setFils(trieToBRD(a.getFilsEqual()));
+		b.setFrere(cur);
+
+		if (a.getFilsSup() != null)
+			cur = convert(a.getFilsSup(), cur);
+
+		return cur;
 	}
 
 }
