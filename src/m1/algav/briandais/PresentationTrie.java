@@ -16,23 +16,24 @@ public class PresentationTrie {
 
 	public static void main(String[] args) throws IOException {
 
+		System.out.println("\n*********************Exemple de Base***************************");
 		ITrieHybride root = exo1_3();
-		System.out.println("************************************************");
+		System.out.println("\n**********************Affichage********************************");
 
+		//FacadeTrieHybride.AfficheTrieHybride(root);
 		System.out.println(""); // TODO affichage Trie root
-		System.out.println("************************************************");
-
-		exo5_12();
-		System.out.println("************************************************");
+		
+		System.out.println("\n*******************Construction de Shakespear*******************************");
 
 		// shakespear
 		root = shakespear();
-		System.out
-				.println("temps en milliseconde ajoutTrie successifs (shakespear): " + shakespearParAddtionSuccessif());
-		System.out.println("************************************************");
+		System.out.println("Temps en milliseconde ajoutTrie successifs (shakespear): " + shakespearParAddtionSuccessif());
 		System.out.println("HauteurTrie de (shakespear) : " + FacadeTrieHybride.Hauteur(root));
-		System.out.println("************************************************");
 		System.out.println("profondeur Moyenne Trie de (shakespear) : " + FacadeTrieHybride.ProfondeurMoyenne(root));
+		
+		System.out.println("\n**********************Ajout de mots dans shakespear**************************");
+
+		exo5_12();
 
 	}
 
@@ -63,6 +64,7 @@ public class PresentationTrie {
 			root = FacadeTrieHybride.AjouteMot(root, s);
 		}
 		long temps = System.nanoTime() - debut;
+		
 		System.out.println("temps en nanoseconde ajout successifs (tries) : " + temps);
 
 		return root;
@@ -76,7 +78,7 @@ public class PresentationTrie {
 		long mesureTimes[] = new long[jeuTestMots.length];
 		long debut = 0;
 
-		System.out.println(Arrays.asList(jeuTestMots));
+		//System.out.println(Arrays.asList(jeuTestMots));
 
 		// ajout
 		long total = System.nanoTime();
@@ -86,11 +88,15 @@ public class PresentationTrie {
 			mesureTimes[i] = System.nanoTime() - debut;
 		}
 		total = System.nanoTime() - total;
-
-		System.out.println("temps en nanoseconde ajout successifs mots (Trie) : " + Arrays.toString(mesureTimes));
+		System.out.println("temps en nanoseconde ajout successifs mots (mot,temps) :" );
+		for (int i = 0; i < jeuTestMots.length; i++) {
+			 System.out.println("["+jeuTestMots[i]+","+mesureTimes[i]+"]");
+			mesureTimes[i] = System.nanoTime() - debut;
+		}
+		
 		System.out.println("temps en nanoseconde ajout successifs 20 mots (Trie) " + total);
 		System.out.println("temps moyenne d'un ajout en nanoseconde (Trie) ==> " + total / jeuTestMots.length);
-		System.out.println("************************************************");
+		System.out.println("\n*******************Recherche dans Shakespear*****************************");
 
 		// recherche
 		total = System.nanoTime();
