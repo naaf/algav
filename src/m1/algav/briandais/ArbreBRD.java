@@ -157,11 +157,12 @@ public class ArbreBRD {
 		}
 		if (m.charAt(0) > abr.getCle()) {
 			abr.setFrere(ajouter(abr.getFrere(), m));
+			return abr;
 		} else {
 			return new NoeudBRD(m.charAt(0), constArbreBRD(m.substring(1)), abr);
 		}
 
-		return abr;
+		
 	}
 
 	public static int comptageNil(NoeudBRD abr) {

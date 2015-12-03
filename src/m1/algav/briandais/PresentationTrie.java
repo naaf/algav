@@ -27,6 +27,7 @@ public class PresentationTrie {
 
 		// shakespear
 		root = shakespear();
+		System.out.println("nombre mots dans shakespear : " + FacadeTrieHybride.ComptageMot(root));
 		System.out.println("Temps en milliseconde ajoutTrie successifs (shakespear): " + shakespearParAddtionSuccessif());
 		System.out.println("HauteurTrie de (shakespear) : " + FacadeTrieHybride.Hauteur(root));
 		System.out.println("profondeur Moyenne Trie de (shakespear) : " + FacadeTrieHybride.ProfondeurMoyenne(root));

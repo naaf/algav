@@ -55,7 +55,18 @@ public class TestArbreBRD {
 	@Test
 	public void testAjouterBRD() {
 		System.out.println("listMots: " + ArbreBRD.listeMots(root));
+		NoeudBRD root = null;
+		root = ajouterBRD(root, "titi");
+		root = ajouterBRD(root, "tutu");
+		root = ajouterBRD(root, "tata");
+		root = ajouterBRD(root, "tonton");
+		root = ajouterBRD(root, "tontonton");
+		root = ajouterBRD(root, "ruru");
+		root = ajouterBRD(root, "utut");
 		root = ajouterBRD(root, "nouveau");
+		root = ajouterBRD(root, "nouv");
+		root = ajouterBRD(root, "noha");
+		root = ajouterBRD(root, "nouvezou");
 		root = ajouterBRD(root, "nouveaute");
 		System.out.println("testAjouterBRD: (nouveau et nouveaute) ");
 		System.out.println("listMots: " + ArbreBRD.listeMots(root));
