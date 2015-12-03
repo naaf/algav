@@ -20,7 +20,7 @@ public class PresentationTrie {
 		ITrieHybride root = exo1_3();
 		System.out.println("\n**********************Affichage********************************");
 
-		//FacadeTrieHybride.AfficheTrieHybride(root);
+		//FacadeTrieHybride.AfficheDansFichier(root, "test");
 		System.out.println(""); // TODO affichage Trie root
 		
 		System.out.println("\n*******************Construction de Shakespear*******************************");
@@ -111,22 +111,26 @@ public class PresentationTrie {
 		System.out.println("temps moyenne d'un (recherche) en nanoseconde (Trie) ==> " + total / jeuTestMots.length);
 		System.out.println("************************************************");
 
-		// Suppression TODO
+		
+		// Suppression
+				System.out.println("\n*******************Suppression dans Shakespear*****************************");
+				
+				total = System.nanoTime();
+				for (int i = 0; i < mesureTimes.length; i++) {
+					debut = System.nanoTime();
+					root=FacadeTrieHybride.Suppression(root, jeuTestMots[i]);
+					mesureTimes[i] = System.nanoTime() - debut;
+				}
+				total = System.nanoTime() - total;
+				for (int i = 0; i < jeuTestMots.length; i++) {
+					 System.out.println("["+jeuTestMots[i]+","+mesureTimes[i]+"]");
+					mesureTimes[i] = System.nanoTime() - debut;
+				}
+				System.out.println("temps en nanoseconde (suppression) successifs 20 mots " + total);
+				System.out.println("temps moyenne d'un (suppression) en nanoseconde ==> " + total / jeuTestMots.length);
+				System.out.println("************************************************");
 
-		// total = System.nanoTime();
-		// for (int i = 0; i < mesureTimes.length; i++) {
-		// debut = System.nanoTime();
-		// ArbreBRD.(root, jeuTestMots[i]);
-		// mesureTimes[i] = System.nanoTime() - debut;
-		// }
-		// total = System.nanoTime() - total;
-		// System.out.println("temps en nanoseconde (suppression) successifs
-		// mots (Trie) : " + Arrays.toString(mesureTimes));
-		// System.out.println("temps en nanoseconde (suppression) successifs 20
-		// mots (Trie) " + total);
-		// System.out.println("temps moyenne d'un (suppression) en nanoseconde
-		// ==> (Trie) " + total / jeuTestMots.length);
-		// System.out.println("************************************************");
+		
 
 	}
 

@@ -1,5 +1,9 @@
 package m1.algav.tries.hybrides;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +23,8 @@ public class FacadeTrieHybride {
 		return ((TrieHybride)abr).getValeur();
 	}
 	public static char CharNoeud(ITrieHybride abr) {
+		if(abr == null)
+			return '_';
 		return ((TrieHybride)abr).getCaractere();
 	}
 	
@@ -50,13 +56,12 @@ public class FacadeTrieHybride {
 	
 	/*Partie Affichage---------------*/
 	/*calucul de nombre de noeud*/
-	public static void AfficheTrieHybride(ITrieHybride abr){
+	public static String AfficheTrieHybride(ITrieHybride abr){
 		int hauteur=0;
 		StringBuffer bf= new StringBuffer();
 		List<ITrieHybride> list = ConstListPourAffichage(abr);
 		if(list.size()==0){
-			System.out.println("TrieHybride Vide");
-			return;
+			return "TrieHybride Vide";
 			
 		}
 		for(int i=list.size(); i>2; i=i/3){
@@ -67,7 +72,7 @@ public class FacadeTrieHybride {
 			bf.append(AfficheNoeud(list, i, hauteur-i));
 		}
 		
-		System.out.println(bf);;
+		return bf.toString();
 		
 	}
 	
@@ -171,6 +176,7 @@ public class FacadeTrieHybride {
 	private static List<ITrieHybride> ConstListPourAffichage(ITrieHybride abr){
 		List<ITrieHybride> list= new ArrayList<ITrieHybride>();
 		int nbNoeud = NbNoeud(abr);
+		System.out.println(nbNoeud);
 		for (int i = 0; i < nbNoeud; i++) {
 			  list.add(null);
 		}
@@ -391,14 +397,14 @@ public class FacadeTrieHybride {
 	public static ITrieHybride Suppression(ITrieHybride abr, String mot){
 		char tete, noeudChar;
 		String queu;
-		ITrieHybride abrCur;
 		if(EstTrieHyprideVide(abr) || FacadeMot.EstMotVide(mot))
 			return abr;
 		tete = FacadeMot.teteMot(mot);
 		queu = FacadeMot.queuMot(mot);
 		noeudChar = CharNoeud(abr);	
 		if(noeudChar == tete){
-			//abr=sup;
+			abr = SuppressionRec(abr, mot);
+			//System.out.println("supp " + abr);
 		}else{
 			if(noeudChar > tete){
 				abr.setFilsInf(Suppression(abr.getFilsInf(), mot));
@@ -407,38 +413,85 @@ public class FacadeTrieHybride {
 			}
 		}
 		return abr;
+		
 	}
 	
 	private static ITrieHybride SuppressionRec(ITrieHybride abr, String mot){
-		/*char tete, noeudChar;
+		//System.out.println("supp rec -");
+		char tete, noeudChar, teteQueu;
 		String queu;
+		if(EstTrieHyprideVide(abr))
+			return abr;
 		tete = FacadeMot.teteMot(mot);
 		queu = FacadeMot.queuMot(mot);
 		noeudChar = CharNoeud(abr);
 		if(queu == null){
 			abr.setValeur(0);
-			return SuppressionChar(abr);
-		//}if(abr.getFilsEqual().getCaractere() )*/
-		return null;
+			if(EstTrieHyprideVide(abr.getFilsEqual()))
+				return SuppressionChar(abr);
+			return abr;
+		}
+		if(EstTrieHyprideVide(abr.getFilsEqual()))
+			return abr;
+		if(abr.getFilsEqual().getCaractere() == FacadeMot.teteMot(queu)){
+			abr.setFilsEqual(SuppressionRec(abr.getFilsEqual(), (queu)));
+			//System.out.println("fils equal " + abr );
+		}else{
+			if(abr.getFilsEqual().getCaractere() > FacadeMot.teteMot(queu)){
+				abr.setFilsInf(SuppressionRec(abr.getFilsEqual().getFilsInf(), queu));
+			}else{
+				abr.setFilsSup(SuppressionRec(abr.getFilsEqual().getFilsSup(), queu));
+			}
+				
+		}
+		//System.out.println("supp rec " + abr );
+		return abr;
 	}
 	
 	private static ITrieHybride SuppressionChar(ITrieHybride abr){
+		//System.out.println("suppression char");
 		ITrieHybride abrDroit = abr.getFilsSup();
 		ITrieHybride abrGauche = abr.getFilsInf();
-		
-		if(abr.getValeur() > 0 || !EstTrieHyprideVide(abr.getFilsEqual()))
-			return abr;
-		return Reorganise(abrGauche, abrDroit);
+		return ReorganiseDroit(abrGauche, abrDroit);
 		
 		
 		
 	}
 	
-	private static ITrieHybride Reorganise(ITrieHybride abrGauche, ITrieHybride abrDroit){
+	private static ITrieHybride ReorganiseDroit(ITrieHybride abrGauche, ITrieHybride abrDroit){
+		//System.out.println("reorganise" + abrGauche + abrDroit);
 		if(EstTrieHyprideVide(abrGauche))
 			return abrDroit;
-		 abrGauche.setFilsSup(Reorganise(abrGauche.getFilsSup(), abrDroit));
+		 abrGauche.setFilsSup(ReorganiseDroit(abrGauche.getFilsSup(), abrDroit));
 		 return abrGauche;
+	}
+	
+	private static ITrieHybride ReorganiseGauche(ITrieHybride abrGauche, ITrieHybride abrDroit){
+		//System.out.println("reorganise" + abrGauche + abrDroit);
+		if(EstTrieHyprideVide(abrDroit))
+			return abrGauche;
+		 abrDroit.setFilsInf(ReorganiseGauche(abrGauche.getFilsInf(), abrDroit));
+		 return abrDroit;
+	}
+	
+	public static void AfficheDansFichier(ITrieHybride abr, String nom){
+		   BufferedWriter bwr;
+		try {
+			bwr = new BufferedWriter(new FileWriter(new File(nom)));
+			bwr.write(AfficheTrieHybride(abr));
+			bwr.flush();
+			bwr.close();
+			System.out.println("Fichier creer");
+		} catch (IOException e) {
+			System.out.println("Fichier non creer");
+			e.printStackTrace();
+		}
+      
+           
+	}
+	
+	public static void AjouteMotEquilibre(){
+		
 	}
 }
 
