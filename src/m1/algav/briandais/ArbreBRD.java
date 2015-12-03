@@ -177,7 +177,7 @@ public class ArbreBRD {
 			return 0;
 		}
 		if (abr.getCle() == FIN_MOT) {
-			return 1 + comptageMots(abr.getFrere());
+			return 1 + comptageMots(abr.getFrere()) ;
 		}
 		return comptageMots(abr.getFils()) + comptageMots(abr.getFrere());
 	}
